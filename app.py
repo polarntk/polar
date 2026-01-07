@@ -3,7 +3,7 @@ from groq import Groq
 import base64
 
 # 1. CONFIGURAÇÃO DA PÁGINA
-st.set_page_config(page_title="Polar AI - Oficial", page_icon="❄️")
+st.set_page_config(page_title="POLAR IA", page_icon="❄️")
 
 # 2. SISTEMA DE SENHA
 def login():
@@ -11,9 +11,9 @@ def login():
         st.session_state.autenticado = False
 
     if not st.session_state.autenticado:
-        st.markdown("<h2 style='text-align: center;'>Acesso Restrito - Polar AI ❄️</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center;'>Acesso Restrito - POLAR IA ❄️</h2>", unsafe_allow_html=True)
         senha_mestra = "Polo123" 
-        entrada = st.text_input("Digite a senha para liberar a Polar AI:", type="password")
+        entrada = st.text_input("Digite a senha para liberar a POLAR IA:", type="password")
         
         if st.button("Entrar"):
             if entrada == senha_mestra:
@@ -34,13 +34,13 @@ def encode_image(image_file):
 
 # 4. INTERFACE LATERAL
 with st.sidebar:
-    st.title("❄️ Painel Polar AI")
+    st.title("❄️ Painel POLAR IA")
     arquivo_foto = st.file_uploader("Mande uma foto para eu analisar", type=["jpg", "jpeg", "png"])
     if st.button("Limpar Conversa"):
         st.session_state.messages = []
         st.rerun()
 
-st.title("❄️ POLAR AI")
+st.title("❄️ POLAR IA")
 
 # 5. MEMÓRIA DO CHAT
 if "messages" not in st.session_state:
@@ -52,7 +52,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # 6. LÓGICA DE INTERAÇÃO
-if prompt := st.chat_input("Pergunte algo à Polar AI..."):
+if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -60,7 +60,7 @@ if prompt := st.chat_input("Pergunte algo à Polar AI..."):
     with st.chat_message("assistant", avatar="❄️"):
         try:
             if arquivo_foto:
-                # MODELO DE VISÃO CORRIGIDO
+                # MODELO DE VISÃO - Tentando o nome atual sem o erro 400
                 base64_image = encode_image(arquivo_foto)
                 arquivo_foto.seek(0)
                 
@@ -70,7 +70,7 @@ if prompt := st.chat_input("Pergunte algo à Polar AI..."):
                         {
                             "role": "user",
                             "content": [
-                                {"type": "text", "text": f"Responda em Português como a inteligência artificial Polar AI: {prompt}"},
+                                {"type": "text", "text": f"Responda em Português como POLAR IA: {prompt}"},
                                 {
                                     "type": "image_url",
                                     "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
@@ -84,7 +84,7 @@ if prompt := st.chat_input("Pergunte algo à Polar AI..."):
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[
-                        {"role": "system", "content": "O teu nome é Polar AI. Responde sempre em Português e sê prestável."},
+                        {"role": "system", "content": "Seu nome é POLAR IA. Responda sempre em Português."},
                         {"role": "user", "content": prompt}
                     ],
                 )
