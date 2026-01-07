@@ -60,12 +60,12 @@ if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
     with st.chat_message("assistant", avatar="❄️"):
         try:
             if arquivo_foto:
-                # MODELO DE VISÃO - Tentando o nome atual sem o erro 400
+                # MODELO ATUALIZADO PARA O MAIS ESTÁVEL (90B)
                 base64_image = encode_image(arquivo_foto)
                 arquivo_foto.seek(0)
                 
                 completion = client.chat.completions.create(
-                    model="llama-3.2-11b-vision-preview", 
+                    model="llama-3.2-90b-vision-preview", 
                     messages=[
                         {
                             "role": "user",
@@ -80,7 +80,7 @@ if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
                     ],
                 )
             else:
-                # TEXTO NORMAL
+                # TEXTO NORMAL (USANDO O MODELO MAIS NOVO LLAMA 3.3)
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[
