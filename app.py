@@ -2,8 +2,36 @@ import streamlit as st
 from groq import Groq
 import base64
 
-# 1. CONFIGURAÇÃO DA PÁGINA
+# 1. CONFIGURAÇÃO DA PÁGINA E WALLPAPER
 st.set_page_config(page_title="POLAR IA", page_icon="❄️")
+
+def add_bg_from_url():
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("https://i.pinimg.com/736x/52/d2/1b/52d21b057d4521db2d730017d5fd234c.jpg");
+             background-attachment: fixed;
+             background-size: cover;
+         }}
+         
+         /* Estilo para as mensagens e títulos ficarem legíveis */
+         h1, h2, h3, p, span {{
+             color: white !important;
+             text-shadow: 2px 2px 4px #000000;
+         }}
+         
+         .stChatMessage {{
+             background-color: rgba(0, 0, 0, 0.6) !important;
+             border-radius: 15px;
+             border: 1px solid #00f2ff;
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
+add_bg_from_url()
 
 # 2. SISTEMA DE SENHA
 def login():
@@ -35,7 +63,7 @@ def encode_image(image_file):
 # 4. INTERFACE LATERAL
 with st.sidebar:
     st.title("❄️ Painel POLAR IA")
-    arquivo_foto = st.file_uploader("Mande uma foto para eu analisar", type=["jpg", "jpeg", "png"])
+    arquivo_foto = st.file_uploader("Mande uma foto", type=["jpg", "jpeg", "png"])
     if st.button("Limpar Conversa"):
         st.session_state.messages = []
         st.rerun()
@@ -60,38 +88,19 @@ if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
     with st.chat_message("assistant", avatar="❄️"):
         try:
             if arquivo_foto:
-                # MODELO ATUALIZADO PARA O MAIS ESTÁVEL (90B)
                 base64_image = encode_image(arquivo_foto)
                 arquivo_foto.seek(0)
-                
                 completion = client.chat.completions.create(
                     model="llama-3.2-90b-vision-preview", 
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": [
-                                {"type": "text", "text": f"Responda em Português como POLAR IA: {prompt}"},
-                                {
-                                    "type": "image_url",
-                                    "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
-                                }
-                            ]
-                        }
-                    ],
+                    messages=[{"role": "user", "content": [{"type": "text", "text": f"Responda como POLAR IA: {prompt}"}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}]}]
                 )
             else:
-                # TEXTO NORMAL (USANDO O MODELO MAIS NOVO LLAMA 3.3)
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
-                    messages=[
-                        {"role": "system", "content": "Seu nome é POLAR IA. Responda sempre em Português."},
-                        {"role": "user", "content": prompt}
-                    ],
+                    messages=[{"role": "system", "content": "Seu nome é POLAR IA."}, {"role": "user", "content": prompt}]
                 )
-            
             resposta = completion.choices[0].message.content
             st.markdown(resposta)
             st.session_state.messages.append({"role": "assistant", "content": resposta})
-            
         except Exception as e:
             st.error(f"Erro na Groq: {e}")
