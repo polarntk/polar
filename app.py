@@ -3,7 +3,7 @@ from groq import Groq
 import base64
 
 # 1. CONFIGURAÇÃO DA PÁGINA
-st.set_page_config(page_title="Polar AI - Oficial", page_icon="❄️")
+st.set_page_config(page_title="Polar IA - Oficial", page_icon="❄️")
 
 # 2. SISTEMA DE SENHA
 def login():
@@ -41,7 +41,7 @@ with st.sidebar:
         st.session_state.messages = []
         st.rerun()
 
-st.title("❄️ POLAR AI")
+st.title("❄️ POLAR IA")
 
 # 5. MEMÓRIA DO CHAT
 if "messages" not in st.session_state:
@@ -105,3 +105,4 @@ if prompt := st.chat_input("Pergunte algo..."):
                 st.markdown(completion.choices[0].message.content)
             except:
                 st.error(f"Erro persistente na Groq: {e}")
+
