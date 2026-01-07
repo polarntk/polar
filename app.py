@@ -3,7 +3,7 @@ from groq import Groq
 import base64
 
 # 1. CONFIGURAÇÃO DA PÁGINA
-st.set_page_config(page_title="Polar IA - Oficial", page_icon="❄️")
+st.set_page_config(page_title="Polar AI - Oficial", page_icon="❄️")
 
 # 2. SISTEMA DE SENHA
 def login():
@@ -11,19 +11,18 @@ def login():
         st.session_state.autenticado = False
 
     if not st.session_state.autenticado:
-        st.markdown("<h2 style='text-align: center;'>Acesso Restrito ❄️</h2>", unsafe_allow_html=True)
-        senha_mestra = "polo123"
-        entrada = st.text_input("Digite a senha para liberar a Polar:", type="password")
+        st.markdown("<h2 style='text-align: center;'>Acesso Restrito - Polar AI ❄️</h2>", unsafe_allow_html=True)
+        senha_mestra = "Polo123" 
+        entrada = st.text_input("Digite a senha para liberar a Polar AI:", type="password")
         
         if st.button("Entrar"):
             if entrada == senha_mestra:
                 st.session_state.autenticado = True
                 st.rerun()
             else:
-                st.error("Senha incorreta, fale com o dono!")
+                st.error("Senha incorreta!")
         st.stop()
 
-# Executa o login
 login()
 
 # 3. CONFIGURAÇÃO DA API
@@ -35,13 +34,13 @@ def encode_image(image_file):
 
 # 4. INTERFACE LATERAL
 with st.sidebar:
-    st.title("❄️ Painel da Polar")
-    arquivo_foto = st.file_uploader("Mande uma foto para eu ver", type=["jpg", "jpeg", "png"])
+    st.title("❄️ Painel Polar AI")
+    arquivo_foto = st.file_uploader("Mande uma foto para eu analisar", type=["jpg", "jpeg", "png"])
     if st.button("Limpar Conversa"):
         st.session_state.messages = []
         st.rerun()
 
-st.title("❄️ POLAR IA")
+st.title("❄️ POLAR AI")
 
 # 5. MEMÓRIA DO CHAT
 if "messages" not in st.session_state:
@@ -53,7 +52,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # 6. LÓGICA DE INTERAÇÃO
-if prompt := st.chat_input("Pergunte algo..."):
+if prompt := st.chat_input("Pergunte algo à Polar AI..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -61,7 +60,7 @@ if prompt := st.chat_input("Pergunte algo..."):
     with st.chat_message("assistant", avatar="❄️"):
         try:
             if arquivo_foto:
-                # MODELO DE VISÃO ATUALIZADO (Llama 3.2 11B Vision)
+                # MODELO DE VISÃO CORRIGIDO
                 base64_image = encode_image(arquivo_foto)
                 arquivo_foto.seek(0)
                 
@@ -71,7 +70,7 @@ if prompt := st.chat_input("Pergunte algo..."):
                         {
                             "role": "user",
                             "content": [
-                                {"type": "text", "text": f"Responda em Português como Polar: {prompt}"},
+                                {"type": "text", "text": f"Responda em Português como a inteligência artificial Polar AI: {prompt}"},
                                 {
                                     "type": "image_url",
                                     "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
@@ -81,11 +80,11 @@ if prompt := st.chat_input("Pergunte algo..."):
                     ],
                 )
             else:
-                # MODELO DE TEXTO (Llama 3.3 70B)
+                # TEXTO NORMAL
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[
-                        {"role": "system", "content": "Seu nome é Polar. Use emojis de gelo e seja prestativa."},
+                        {"role": "system", "content": "O teu nome é Polar AI. Responde sempre em Português e sê prestável."},
                         {"role": "user", "content": prompt}
                     ],
                 )
@@ -95,14 +94,4 @@ if prompt := st.chat_input("Pergunte algo..."):
             st.session_state.messages.append({"role": "assistant", "content": resposta})
             
         except Exception as e:
-            # Se o 11b falhar, tentamos o modelo 90b automaticamente como plano B
-            st.warning("Tentando modelo alternativo...")
-            try:
-                completion = client.chat.completions.create(
-                    model="llama-3.2-90b-vision-preview",
-                    messages=[{"role": "user", "content": prompt}]
-                )
-                st.markdown(completion.choices[0].message.content)
-            except:
-                st.error(f"Erro persistente na Groq: {e}")
-
+            st.error(f"Erro na Groq: {e}")
