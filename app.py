@@ -10,21 +10,28 @@ def add_bg_from_url():
          f"""
          <style>
          .stApp {{
-             background-image: url("https://i.pinimg.com/736x/52/d2/1b/52d21b057d4521db2d730017d5fd234c.jpg");
+             background-image: url("https://i.pinimg.com/1200x/8b/d5/31/8bd531260c06a3bfcd70d24f94c783ff.jpg");
              background-attachment: fixed;
              background-size: cover;
          }}
          
-         /* Estilo para as mensagens e títulos ficarem legíveis */
-         h1, h2, h3, p, span {{
+         /* Melhora a visibilidade dos textos e títulos */
+         h1, h2, h3, p, span, label {{
              color: white !important;
-             text-shadow: 2px 2px 4px #000000;
+             text-shadow: 2px 2px 8px #000000 !important;
          }}
          
+         /* Estilo das caixas de conversa */
          .stChatMessage {{
-             background-color: rgba(0, 0, 0, 0.6) !important;
+             background-color: rgba(0, 0, 0, 0.7) !important;
              border-radius: 15px;
              border: 1px solid #00f2ff;
+             margin-bottom: 10px;
+         }}
+
+         /* Estilo da barra lateral */
+         section[data-testid="stSidebar"] {{
+             background-color: rgba(0, 0, 0, 0.8) !important;
          }}
          </style>
          """,
@@ -63,7 +70,7 @@ def encode_image(image_file):
 # 4. INTERFACE LATERAL
 with st.sidebar:
     st.title("❄️ Painel POLAR IA")
-    arquivo_foto = st.file_uploader("Mande uma foto", type=["jpg", "jpeg", "png"])
+    arquivo_foto = st.file_uploader("Mande uma foto para análise", type=["jpg", "jpeg", "png"])
     if st.button("Limpar Conversa"):
         st.session_state.messages = []
         st.rerun()
@@ -97,7 +104,7 @@ if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
             else:
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
-                    messages=[{"role": "system", "content": "Seu nome é POLAR IA."}, {"role": "user", "content": prompt}]
+                    messages=[{"role": "system", "content": "Teu nome é POLAR IA. Responde sempre em Português."}, {"role": "user", "content": prompt}]
                 )
             resposta = completion.choices[0].message.content
             st.markdown(resposta)
