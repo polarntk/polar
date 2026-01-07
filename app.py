@@ -5,7 +5,11 @@ import base64
 # 1. CONFIGURAÇÃO DA PÁGINA E WALLPAPER
 st.set_page_config(page_title="POLAR IA", page_icon="❄️")
 
-def add_bg_from_url():
+# LINKS DOS AVATARES ATUALIZADOS
+AVATAR_USUARIO = "https://i.pinimg.com/736x/7e/dd/fc/7eddfcef47fb69ef3d9f68a6bc4f708a.jpg"
+AVATAR_POLAR = "https://i.pinimg.com/736x/53/1f/92/531f928838735f1396c81bdc911df964.jpg"
+
+def aplicar_estilo():
     st.markdown(
          f"""
          <style>
@@ -15,13 +19,13 @@ def add_bg_from_url():
              background-size: cover;
          }}
          
-         /* Melhora a visibilidade dos textos e títulos */
+         /* Texto e Títulos */
          h1, h2, h3, p, span, label {{
              color: white !important;
              text-shadow: 2px 2px 8px #000000 !important;
          }}
          
-         /* Estilo das caixas de conversa */
+         /* Caixas de Mensagem */
          .stChatMessage {{
              background-color: rgba(0, 0, 0, 0.7) !important;
              border-radius: 15px;
@@ -29,7 +33,7 @@ def add_bg_from_url():
              margin-bottom: 10px;
          }}
 
-         /* Estilo da barra lateral */
+         /* Barra Lateral */
          section[data-testid="stSidebar"] {{
              background-color: rgba(0, 0, 0, 0.8) !important;
          }}
@@ -38,7 +42,7 @@ def add_bg_from_url():
          unsafe_allow_html=True
      )
 
-add_bg_from_url()
+aplicar_estilo()
 
 # 2. SISTEMA DE SENHA
 def login():
@@ -77,22 +81,22 @@ with st.sidebar:
 
 st.title("❄️ POLAR IA")
 
-# 5. MEMÓRIA DO CHAT
+# 5. EXIBIÇÃO DO CHAT COM AVATARES PERSONALIZADOS
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 for message in st.session_state.messages:
-    avatar = "❄️" if message["role"] == "assistant" else None
-    with st.chat_message(message["role"], avatar=avatar):
+    foto = AVATAR_POLAR if message["role"] == "assistant" else AVATAR_USUARIO
+    with st.chat_message(message["role"], avatar=foto):
         st.markdown(message["content"])
 
 # 6. LÓGICA DE INTERAÇÃO
 if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar=AVATAR_USUARIO):
         st.markdown(prompt)
 
-    with st.chat_message("assistant", avatar="❄️"):
+    with st.chat_message("assistant", avatar=AVATAR_POLAR):
         try:
             if arquivo_foto:
                 base64_image = encode_image(arquivo_foto)
@@ -104,7 +108,7 @@ if prompt := st.chat_input("Pergunte algo à POLAR IA..."):
             else:
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
-                    messages=[{"role": "system", "content": "Teu nome é POLAR IA. Responde sempre em Português."}, {"role": "user", "content": prompt}]
+                    messages=[{"role": "system", "content": "Seu nome é POLAR IA. Responda em Português."}, {"role": "user", "content": prompt}]
                 )
             resposta = completion.choices[0].message.content
             st.markdown(resposta)
